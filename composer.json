@@ -1,0 +1,22 @@
+{
+  "name": "andersonrezende/desafio_soft_expert",
+  "description": "Desafio Técnico PHP",
+  "homepage": "https://github.com/AndersonRezende/DesafioSoftExpert",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Anderson F. Rezende",
+      "email": "andersonrezende17@hotmail.com",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": ">=7.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "DesafioSoftExpert\\": "src"
+    }
+  }
+}
