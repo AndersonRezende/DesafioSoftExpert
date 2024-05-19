@@ -5,7 +5,7 @@ namespace DesafioSoftExpert\Repositories;
 use DesafioSoftExpert\Core\Database;
 use PDO;
 
-class UserRepository
+class UserRepository implements Repository
 {
     protected $db;
 
@@ -22,4 +22,23 @@ class UserRepository
         return $stmt->fetchAll();
     }
 
+    public function find(int $id)
+    {
+        // TODO: Implement find() method.
+    }
+
+    public function create(array $data)
+    {
+        // TODO: Implement create() method.
+    }
+
+    public function update(array $data, int $id)
+    {
+        // TODO: Implement update() method.
+    }
+
+    public function delete(int $id)
+    {
+        // TODO: Implement delete() method.
+    }
 }
