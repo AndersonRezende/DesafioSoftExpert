@@ -31,6 +31,48 @@ services:
       - postgres-db-network
     restart: unless-stopped
 
+  php-fpm:
+    container_name: php-fpm
+    build:
+      context: .
+      dockerfile: ./etc/dockerfile/dockerfile_php_7
+    restart: always
+    volumes:
+      - ../web/:/var/www/html
+    expose:
+      - "9000"
+    links:
+      - postgres
+    depends_on:
+      - postgres
+    networks:
+      - postgres-db-network
+
+  composer:
+    image: composer
+    volumes:
+      - ../web/:/app/
+    command: ["composer", "install"]
+
+  nginx:
+    build:
+      context: .
+      dockerfile: ./etc/dockerfile/dockerfile_nginx
+    container_name: nginx
+    restart: always
+    ports:
+      - "8080:80"
+    volumes:
+      - ../web:/var/www/html
+      - ./etc/conf/nginx/default.conf:/etc/nginx/default.conf
+    links:
+      - postgres
+    depends_on:
+      - php-fpm
+      - composer
+    networks:
+      - postgres-db-network
+
 networks:
   postgres-db-network:
     driver: bridge

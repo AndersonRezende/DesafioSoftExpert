@@ -1,0 +1,9 @@
+FROM nginx
+
+ARG APP_TARGET=${APP_TARGET}
+
+ADD ./etc/conf/nginx/default.conf /etc/nginx/conf.d/default.conf
+ADD ./etc/conf/nginx/fastcgi-php.conf /etc/nginx/snippets/fastcgi-php.conf
+RUN usermod -u 1000 www-data
+
+WORKDIR /var/www
