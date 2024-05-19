@@ -11,11 +11,13 @@ class Database
     public static function getConnection()
     {
         if (!isset(self::$connection)) {
-            self::$connection = new PDO(
-                "mysql:host=".getenv('DB_HOST').";dbname=".getenv('DB_DATABASE'),
-                getenv('DB_USERNAME'),
-                getenv('DB_PASSWORD')
-            );
+            $dbHost = getenv('DB_HOST');
+            $dbName = getenv('DB_DATABASE');
+            $dbUser = getenv('DB_USERNAME');
+            $dbPassword = getenv('DB_PASSWORD');
+
+            $dsn = "pgsql:host=$dbHost;dbname=$dbName";
+            self::$connection = new PDO($dsn, $dbUser, $dbPassword);
             self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         }
         return self::$connection;
