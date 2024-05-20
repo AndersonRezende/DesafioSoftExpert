@@ -4,7 +4,7 @@ namespace DesafioSoftExpert\Controllers;
 
 use DesafioSoftExpert\Repositories\UserRepository;
 
-class HomeController
+class HomeController extends Controller
 {
     public function index()
     {

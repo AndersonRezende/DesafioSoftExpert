@@ -2,11 +2,10 @@
 
 namespace DesafioSoftExpert\Controllers;
 
-class ErrorController
+class ErrorController extends Controller
 {
-    public function index(int $code)
+    public function show(int $code, $message)
     {
-        
+        echo "<h1>$message</h1>";
     }
-
 }
