@@ -2,14 +2,12 @@
 
 namespace DesafioSoftExpert\Controllers;
 
-use DesafioSoftExpert\Repositories\UserRepository;
+use DesafioSoftExpert\Core\View;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        $userRepository = new UserRepository();
-        $users = $userRepository->all();
-        include __DIR__ . '/../Views/home/index.php';
+        return View::render('home/index');
     }
 }

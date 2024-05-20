@@ -57,23 +57,12 @@ class Router
     }
 
     /**
-     * @return array
+     * Inicializa o processo para obtenção dos dados para construir a renderização
+     * @return void
      */
-    private function getQueryString(): array
-    {
-        if (isset($_SERVER['QUERY_STRING'])) {
-            $queryString = $_SERVER['QUERY_STRING'];
-            parse_str($queryString, $params);
-            return $params;
-        }
-        return [];
-    }
-
     private function buildUri(): void
     {
-        // O objetivo aqui é obter os dados da url, identificar para onde mandar a requisição e então repassar
         $requestUri = $_SERVER['REQUEST_URI'];
-        $queryString = $this->getQueryString();
         $requestUri = preg_replace('/\?.*/', '', $requestUri);
         $url = preg_split('@/@', $requestUri, -1, PREG_SPLIT_NO_EMPTY);
 
@@ -81,7 +70,7 @@ class Router
             $path = preg_split('@/@', $route['path'], -1, PREG_SPLIT_NO_EMPTY);
 
             if ($url === $path && $_SERVER['REQUEST_METHOD'] === $route['method']) {
-                $this->buildController($route['controller'], $route['action'], $route['middleware'], $queryString);
+                $this->buildController($route['controller'], $route['action'], $route['middleware']);
                 die();
             }
         }
@@ -93,19 +82,22 @@ class Router
      * @param $controller
      * @param $action
      * @param $middleware
-     * @param $queryString
      * @return void
      */
-    private function buildController($controller, $action, $middleware, $queryString): void
+    private function buildController($controller, $action, $middleware): void
     {
-        $params = array_merge($_GET, $_POST);
-        $request = new Request($params, $queryString);
+        $request = new Request();
         if ($middleware != null) {
             call_user_func([$middleware, 'handle'], $request);
         }
-        $this->sendResponse((new $controller)->$action($middleware, $queryString));
+        $this->sendResponse((new $controller)->$action($middleware));
     }
 
+    /**
+     * Retorna a resposta da requisição
+     * @param $content
+     * @return void
+     */
     private function sendResponse($content): void
     {
         (new Response(200, $content))->sendResponse();
