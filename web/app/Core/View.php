@@ -69,12 +69,20 @@ class View
 
     private static function processVariables($contentView)
     {
-        $keys = array_keys(self::$vars);
-        $keys = array_map(function ($key) {
-            return '{{'.$key.'}}';
-        }, $keys);
-
-        return str_replace($keys, array_values(self::$vars), $contentView);
+        foreach (self::$vars as $key => $value) {
+            $placeholder = '{{' . $key . '}}';
+            if (is_object($value)) {
+                if (method_exists($value, '__toString')) {
+                    $value = $value->__toString();
+                } else {
+                    continue;
+                }
+            } elseif (is_array($value)) {
+                $value = json_encode($value);
+            }
+            $contentView = str_replace($placeholder, htmlspecialchars($value), $contentView);
+        }
+        return $contentView;
     }
 
     private static function processConditionals($contentView)

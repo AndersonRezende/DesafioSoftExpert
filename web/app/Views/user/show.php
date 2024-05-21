@@ -26,24 +26,15 @@
                     </div>
                 </form>
 
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Nome</th>
-                        <th scope="col">email</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach ($users as $user)
-                    <tr>
-                        <td>{{$user->getId()}}</td>
-                        <td>{{$user->getName()}}</td>
-                        <td>{{$user->getEmail()}}</td>
-                    </tr>
-                    @endforeach
-                    </tbody>
-                </table>
+                <div class="card" style="width: 18rem;">
+                    <div class="card-header">
+                        Usuário
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">{{$user->getName()}}</li>
+                        <li class="list-group-item">{{$user->getEmail()}}</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </section>

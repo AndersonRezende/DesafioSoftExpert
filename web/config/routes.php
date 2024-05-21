@@ -10,3 +10,5 @@ Router::get('/home/teste', [HomeController::class, 'index']);
 Router::post('/home/teste', [HomeController::class, 'index'], \DesafioSoftExpert\Middleware\BaseMiddleware::class);
 
 Router::get('/user', [UserController::class, 'index']);
+Router::get('/user/{id}', [UserController::class, 'show']);
+Router::get('/user/{id}/name/{name}', [UserController::class, 'list']);

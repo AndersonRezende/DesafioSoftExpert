@@ -7,6 +7,7 @@ use DesafioSoftExpert\Error\Error;
 
 class Router
 {
+    private static string $parametersRegex = '/\{([a-zA-Z]+)\}/';
     public static array $routes = array();
 
     public function __construct()
@@ -24,12 +25,14 @@ class Router
      */
     private static function addRoute($method, $path, $action, $middleware = null): void
     {
+        preg_match_all(self::$parametersRegex, $path, $matches);
         self::$routes[] = array(
             'path' => $path,
             'controller' => $action[0],
             'action' => $action[1],
             'middleware' => $middleware,
             'method' => $method,
+            'parameters' => $matches[1],
         );
     }
 
@@ -67,10 +70,9 @@ class Router
         $url = preg_split('@/@', $requestUri, -1, PREG_SPLIT_NO_EMPTY);
 
         foreach (Router::$routes as $index => $route) {
-            $path = preg_split('@/@', $route['path'], -1, PREG_SPLIT_NO_EMPTY);
-
-            if ($url === $path && $_SERVER['REQUEST_METHOD'] === $route['method']) {
-                $this->buildController($route['controller'], $route['action'], $route['middleware']);
+            $parameters = $this->matchUriPattern($route['path'], $requestUri);
+            if ($parameters !== false && $_SERVER['REQUEST_METHOD'] === $route['method']) {
+                $this->buildController($route['controller'], $route['action'], $route['middleware'], $parameters);
                 die();
             }
         }
@@ -84,13 +86,13 @@ class Router
      * @param $middleware
      * @return void
      */
-    private function buildController($controller, $action, $middleware): void
+    private function buildController($controller, $action, $middleware, $parameters): void
     {
         $request = new Request();
         if ($middleware != null) {
             call_user_func([$middleware, 'handle'], $request);
         }
-        $this->sendResponse((new $controller)->$action($middleware));
+        $this->sendResponse(call_user_func_array([$controller, $action], $parameters));
     }
 
     /**
@@ -101,5 +103,30 @@ class Router
     private function sendResponse($content): void
     {
         (new Response(200, $content))->sendResponse();
+    }
+
+    /**
+     * Busca a rota correspondente a uri informada e devolve um array contendo os parâmetros caso encontrado
+     * ou false caso não exista correspondência.
+     * @param $pattern
+     * @param $uri
+     * @return array|false
+     */
+    private function matchUriPattern($pattern, $uri)
+    {
+        $escapedPattern = preg_quote($pattern, '/');
+        $regexPattern = preg_replace('/\\\{[a-zA-Z]+\\\}/', '([a-zA-Z0-9_\-]+)', $escapedPattern);
+        $regexPattern = '/^' . $regexPattern . '$/';
+
+        if (preg_match($regexPattern, $uri, $matches)) {
+            array_shift($matches);
+            preg_match_all('/\{([a-zA-Z]+)\}/', $pattern, $variableNames);
+            $variableNames = $variableNames[1];
+            $variables = array_combine($variableNames, $matches);
+
+            return $variables;
+        } else {
+            return false;
+        }
     }
 }

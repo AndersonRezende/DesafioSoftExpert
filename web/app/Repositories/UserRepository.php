@@ -3,6 +3,7 @@
 namespace DesafioSoftExpert\Repositories;
 
 use DesafioSoftExpert\Core\Database;
+use DesafioSoftExpert\Models\User;
 use PDO;
 
 class UserRepository implements Repository
@@ -14,17 +15,30 @@ class UserRepository implements Repository
         $this->db = Database::getConnection();
     }
 
-    public function all()
+    /**
+     * @return User[]
+     */
+    public function all(): array
     {
         $stmt = $this->db->prepare("SELECT * FROM users");
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $stmt->execute();
-        return $stmt->fetchAll();
+        $list = $stmt->fetchAll();
+        $users = [];
+        foreach ($list as $user) {
+            $users[] = new User($user);
+        }
+        return $users;
     }
 
-    public function find(int $id)
+    public function find(int $id): User
     {
         // TODO: Implement find() method.
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE id = :id");
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->bindValue(":id", $id);
+        $stmt->execute();
+        return new User($stmt->fetch(PDO::FETCH_ASSOC));
     }
 
     public function create(array $data)

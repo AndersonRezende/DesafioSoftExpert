@@ -10,17 +10,22 @@ class User
     private $password;
 
     /**
-     * @param $id
-     * @param $name
-     * @param $email
-     * @param $password
+     * @param array $data
      */
-    public function __construct($id, $name, $email, $password)
+    public function __construct($data = array())
     {
-        $this->id = $id;
-        $this->name = $name;
-        $this->email = $email;
-        $this->password = $password;
+        if (!empty($data)) {
+            $this->hydrate($data);
+        }
+    }
+
+    public function hydrate(array $data)
+    {
+        foreach ($data as $key => $value) {
+            if (property_exists($this, $key)) {
+                $this->$key = $value;
+            }
+        }
     }
 
     /**
