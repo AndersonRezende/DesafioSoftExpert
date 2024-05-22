@@ -9,9 +9,9 @@ $dotenv->load();
 
 $dbHost = getenv('DB_HOST');
 $dbPort = getenv('DB_PORT', 5432);
-$dbName = getenv('DB_DATABASE');
-$dbUser = getenv('DB_USERNAME');
-$dbPassword = getenv('DB_PASSWORD');
+$dbName = getenv('POSTGRES_DB');
+$dbUser = getenv('POSTGRES_USER');
+$dbPassword = getenv('POSTGRES_PASSWORD');
 
 try {
     $dsn = "pgsql:host=$dbHost;dbname=postgres";

@@ -12,9 +12,9 @@ class Database
     {
         if (!isset(self::$connection)) {
             $dbHost = getenv('DB_HOST');
-            $dbName = getenv('DB_DATABASE');
-            $dbUser = getenv('DB_USERNAME');
-            $dbPassword = getenv('DB_PASSWORD');
+            $dbName = getenv('POSTGRES_DB');
+            $dbUser = getenv('POSTGRES_USER');
+            $dbPassword = getenv('POSTGRES_PASSWORD');
 
             $dsn = "pgsql:host=$dbHost;dbname=$dbName";
             self::$connection = new PDO($dsn, $dbUser, $dbPassword);

@@ -4,11 +4,8 @@ services:
     image: postgres
     restart: always
     env_file:
-      - ../web/.env
+      - ./../web/.env
     environment:
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_DATABASE}
       PGDATA: /data/postgres
     ports:
       - "5432:5432"
