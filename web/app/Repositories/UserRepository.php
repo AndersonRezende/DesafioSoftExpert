@@ -33,7 +33,6 @@ class UserRepository implements Repository
 
     public function find(int $id): User
     {
-        // TODO: Implement find() method.
         $stmt = $this->db->prepare("SELECT * FROM users WHERE id = :id");
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $stmt->bindValue(":id", $id);
@@ -43,7 +42,18 @@ class UserRepository implements Repository
 
     public function create(array $data)
     {
-        // TODO: Implement create() method.
+        $stmt = $this->db->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->bindValue(1, $data['name']);
+        $stmt->bindValue(2, $data['email']);
+        $stmt->bindValue(3, $data['password']);
+        $result = $stmt->execute();
+        if ($result) {
+            $user = new User($data);
+            $user->setId($this->db->lastInsertId());
+            return $user;
+        }
+        return $result;
     }
 
     public function update(array $data, int $id)
