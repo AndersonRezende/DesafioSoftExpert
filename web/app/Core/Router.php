@@ -87,6 +87,7 @@ class Router
     private function buildController($controller, $action, $middleware, $parameters): void
     {
         $request = new Request();
+        $parameters['request'] = $request;
         if ($middleware != null) {
             call_user_func([$middleware, 'handle'], $request);
         }

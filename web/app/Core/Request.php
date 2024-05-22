@@ -53,7 +53,7 @@ class Request
      */
     public function get($param)
     {
-        return $this->queryParams[$param] ?? null;
+        return $this->queryParams[$param] ?? $this->postVars[$param] ?? null;
     }
 
     /**
