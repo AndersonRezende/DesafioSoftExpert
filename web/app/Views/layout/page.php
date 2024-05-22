@@ -26,9 +26,9 @@
                         <a class="nav-link" aria-current="page" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/pessoas">
+                        <a class="nav-link" href="/user">
                             <i class="bi bi-person"></i>
-                            Pessoas
+                            Usuários
                         </a>
                     </li>
                 </ul>

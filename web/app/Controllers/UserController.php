@@ -21,6 +21,11 @@ class UserController extends Controller
         return View::render('user/show', ['user' => $user]);
     }
 
+    public function create()
+    {
+        return View::render('user/create');
+    }
+
     public function list()
     {
 

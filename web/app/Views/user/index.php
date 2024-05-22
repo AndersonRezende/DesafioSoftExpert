@@ -4,7 +4,7 @@
         <div class="row py-lg-5">
             <div class="col-lg-9 col-md-8 mx-auto">
                 <h1 class="fw-light">Listagem de Usuários</h1>
-                <a type="button" class="btn btn-primary" href="/user/novo">
+                <a type="button" class="btn btn-primary" href="/user/new">
                     <i class="bi bi-plus"></i>
                     Adicionar
                 </a>
@@ -38,6 +38,7 @@
                     @foreach ($users as $user)
                     <tr>
                         <td>{{$user->getId()}}</td>
+                        <td><a href="/user/{{$user->getId()}}">{{$user->getName()}}</a></td>
                         <td>{{$user->getName()}}</td>
                         <td>{{$user->getEmail()}}</td>
                     </tr>

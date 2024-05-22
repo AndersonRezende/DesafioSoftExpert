@@ -7,7 +7,7 @@ use DesafioSoftExpert\Error\Error;
 
 class Router
 {
-    private static string $parametersRegex = '/\{([a-zA-Z]+)\}/';
+    private static string $parametersRegex = '/\{([a-zA-Z]+)}/';
     public static array $routes = array();
 
     public function __construct()
@@ -48,7 +48,8 @@ class Router
         self::addRoute('GET', $path, $action, $middleware);
     }
 
-    /** Adiciona rotas do tipo POST
+    /**
+     * Adiciona rotas do tipo POST
      * @param $path
      * @param $action
      * @param $middleware
@@ -69,14 +70,11 @@ class Router
         $requestUri = preg_replace('/\?.*/', '', $requestUri);
         $url = preg_split('@/@', $requestUri, -1, PREG_SPLIT_NO_EMPTY);
 
-        foreach (Router::$routes as $index => $route) {
-            $parameters = $this->matchUriPattern($route['path'], $requestUri);
-            if ($parameters !== false && $_SERVER['REQUEST_METHOD'] === $route['method']) {
-                $this->buildController($route['controller'], $route['action'], $route['middleware'], $parameters);
-                die();
-            }
-        }
-        Error::throwError(Error::NOT_FOUND, 'Não foi possível encontrar o recurso solicitado.');
+        $route = $this->matchUri($requestUri);
+        $parameters = $this->getParameters($route, $requestUri);
+        $this->buildController($route['controller'], $route['action'], $route['middleware'], $parameters);
+        die();
+
     }
 
     /**
@@ -92,7 +90,91 @@ class Router
         if ($middleware != null) {
             call_user_func([$middleware, 'handle'], $request);
         }
-        $this->sendResponse(call_user_func_array([$controller, $action], $parameters));
+        try {
+            $this->sendResponse(call_user_func_array([$controller, $action], $parameters));
+        } catch (\Exception $e) {
+            Error::throwError(Error::NOT_FOUND, 'Não foi possível encontrar o recurso solicitado.');
+        }
+    }
+
+    /**
+     * Busca a rota desejada com base na url requisitada.
+     * @param string $requestUri <p>
+     * A rota requisitada.
+     * </p>
+     * @return array[]|false Se for encontrada uma rota
+     * correspondente a url requisitada, será retornado
+     * a rota equivalente. Caso contrário, será retornado
+     * false.
+     */
+    private function matchUri(string $requestUri)
+    {
+        $routesWithParameters = [];
+        $routesWithoutParameters = [];
+        foreach (self::$routes as $route) {
+            if (!empty($route['parameters'])) {
+                $routesWithParameters[] = $route;
+            } else {
+                $routesWithoutParameters[] = $route;
+            }
+        }
+
+        foreach ($routesWithoutParameters as $route) {
+            if ($route['path'] === $requestUri) {
+                return $route;
+            }
+        }
+
+        $explodedUri = explode('/', $requestUri);
+        foreach ($routesWithParameters as $route) {
+            $explodedRouteWithParameters = explode('/', $route['path']);
+
+            if (sizeof($explodedUri) === sizeof($explodedRouteWithParameters)) {
+                $selectedRoute = false;
+                foreach ($explodedRouteWithParameters as $index => $routePart) {
+                    if (preg_match('/\{([a-zA-Z]+)}/', $routePart, $matches) === 1
+                        || $routePart === $explodedUri[$index]) {
+                        $selectedRoute = true;
+                    } else {
+                        $selectedRoute = false;
+                        break;
+                    }
+
+                }
+                if ($selectedRoute) {
+                    return $route;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Obtém os parâmetros da rota solicitada.
+     * @param array $route <p>
+     * O array contendo os dados da rota.
+     * </p>
+     * * @param string $requestUri <p>
+     * A string contendo a rota requisitada.
+     * </p>
+     * @return array[] Retorna o array contendo chave/valor
+     * dos parâmetros necessários da rota.
+     */
+    private function getParameters(array $route, string $requestUri): array
+    {
+        if (empty($route['parameters'])) {
+            return [];
+        }
+
+        $variables = [];
+        $explodedUri = explode('/', $requestUri);
+        $explodedRoute = explode('/', $route['path']);
+        foreach ($explodedRoute as $index => $routePart) {
+            if (preg_match(self::$parametersRegex, $routePart, $matches) === 1) {
+                $variables[$matches[1]] = $explodedUri[$index];
+            }
+        }
+        return $variables;
     }
 
     /**
@@ -103,30 +185,5 @@ class Router
     private function sendResponse($content): void
     {
         (new Response(200, $content))->sendResponse();
-    }
-
-    /**
-     * Busca a rota correspondente a uri informada e devolve um array contendo os parâmetros caso encontrado
-     * ou false caso não exista correspondência.
-     * @param $pattern
-     * @param $uri
-     * @return array|false
-     */
-    private function matchUriPattern($pattern, $uri)
-    {
-        $escapedPattern = preg_quote($pattern, '/');
-        $regexPattern = preg_replace('/\\\{[a-zA-Z]+\\\}/', '([a-zA-Z0-9_\-]+)', $escapedPattern);
-        $regexPattern = '/^' . $regexPattern . '$/';
-
-        if (preg_match($regexPattern, $uri, $matches)) {
-            array_shift($matches);
-            preg_match_all('/\{([a-zA-Z]+)\}/', $pattern, $variableNames);
-            $variableNames = $variableNames[1];
-            $variables = array_combine($variableNames, $matches);
-
-            return $variables;
-        } else {
-            return false;
-        }
     }
 }

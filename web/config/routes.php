@@ -11,4 +11,5 @@ Router::post('/home/teste', [HomeController::class, 'index'], \DesafioSoftExpert
 
 Router::get('/user', [UserController::class, 'index']);
 Router::get('/user/{id}', [UserController::class, 'show']);
+Router::get('/user/new', [UserController::class, 'create']);
 Router::get('/user/{id}/name/{name}', [UserController::class, 'list']);
