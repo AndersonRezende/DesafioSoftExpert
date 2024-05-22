@@ -70,7 +70,7 @@ class Router
         $requestUri = preg_replace('/\?.*/', '', $requestUri);
         $url = preg_split('@/@', $requestUri, -1, PREG_SPLIT_NO_EMPTY);
 
-        $route = $this->matchUri($requestUri);
+        $route = $this->matchUri($requestUri, $_SERVER['REQUEST_METHOD']);
         $parameters = $this->getParameters($route, $requestUri);
         $this->buildController($route['controller'], $route['action'], $route['middleware'], $parameters);
         die();
@@ -107,15 +107,17 @@ class Router
      * a rota equivalente. Caso contrário, será retornado
      * false.
      */
-    private function matchUri(string $requestUri)
+    private function matchUri(string $requestUri, string $method)
     {
         $routesWithParameters = [];
         $routesWithoutParameters = [];
         foreach (self::$routes as $route) {
-            if (!empty($route['parameters'])) {
-                $routesWithParameters[] = $route;
-            } else {
-                $routesWithoutParameters[] = $route;
+            if ($route['method'] === $method) {
+                if (!empty($route['parameters'])) {
+                    $routesWithParameters[] = $route;
+                } else {
+                    $routesWithoutParameters[] = $route;
+                }
             }
         }
 
