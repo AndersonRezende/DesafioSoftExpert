@@ -3,10 +3,12 @@ services:
   postgres:
     image: postgres
     restart: always
+    env_file:
+      - ../web/.env
     environment:
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "root"
-      POSTGRES_DB: "desafio_soft_expert"
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
       PGDATA: /data/postgres
     ports:
       - "5432:5432"
