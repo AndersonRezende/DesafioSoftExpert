@@ -60,7 +60,7 @@ class UserRepository implements Repository
         return $result;
     }
 
-    public function update(array $data, int $id)
+    public function update(int $id, array $data)
     {
         // TODO: Implement update() method.
     }

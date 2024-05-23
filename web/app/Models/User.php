@@ -2,8 +2,12 @@
 
 namespace DesafioSoftExpert\Models;
 
+use DesafioSoftExpert\Traits\Hydrator;
+
 class User
 {
+    use Hydrator;
+
     private $id;
     private $name;
     private $email;
@@ -14,19 +18,10 @@ class User
     /**
      * @param array $data
      */
-    public function __construct($data = array())
+    public function __construct(array $data = array())
     {
         if (!empty($data)) {
             $this->hydrate($data);
-        }
-    }
-
-    public function hydrate(array $data)
-    {
-        foreach ($data as $key => $value) {
-            if (property_exists($this, $key)) {
-                $this->$key = $value;
-            }
         }
     }
 
