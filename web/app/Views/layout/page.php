@@ -43,6 +43,12 @@
                             Tipos de produto
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/tax">
+                            <i class="bi bi-currency-dollar"></i>
+                            Impostos
+                        </a>
+                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Conta

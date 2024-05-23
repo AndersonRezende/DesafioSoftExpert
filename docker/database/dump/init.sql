@@ -21,7 +21,20 @@ create table "products"(
                            description     VARCHAR(255)   NOT NULL,
                            price           NUMERIC(15, 5) NOT NULL,
                            id_product_type INT,
-                           FOREIGN KEY (id_product_type) REFERENCES product_type (id) ON DELETE SET NULL
+                           FOREIGN KEY (id_product_type) REFERENCES product_type (id) ON DELETE CASCADE
 );
 
+create table "taxes"(
+                           id              SERIAL PRIMARY KEY,
+                           name            VARCHAR(100)   NOT NULL,
+                           value           NUMERIC(15, 5) NOT NULL
+);
+
+create table "tax_product"(
+                        id              SERIAL PRIMARY KEY,
+                        id_tax INT,
+                        id_product_type INT,
+                        FOREIGN KEY (id_tax) REFERENCES taxes (id) ON DELETE CASCADE ,
+                        FOREIGN KEY (id_product_type) REFERENCES product_type (id) ON DELETE CASCADE
+);
 --INSERT INTO "users" (name, email, password) VALUES ('Anderson', 'anderson@email.com', '!senha!');

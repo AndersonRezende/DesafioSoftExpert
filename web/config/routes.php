@@ -4,6 +4,7 @@ use DesafioSoftExpert\Controllers\AuthController;
 use DesafioSoftExpert\Controllers\HomeController;
 use DesafioSoftExpert\Controllers\ProductController;
 use DesafioSoftExpert\Controllers\ProductTypeController;
+use DesafioSoftExpert\Controllers\TaxController;
 use DesafioSoftExpert\Controllers\UserController;
 use DesafioSoftExpert\Core\Router;
 use DesafioSoftExpert\Middleware\AuthMiddleware;
@@ -38,3 +39,11 @@ Router::get('/products/edit/{id}', [ProductController::class, 'edit'], AuthMiddl
 Router::post('/products/store', [ProductController::class, 'store'], AuthMiddleware::class);
 Router::post('/products/update/{id}', [ProductController::class, 'update'], AuthMiddleware::class);
 Router::post('/products/destroy/{id}', [ProductController::class, 'destroy'], AuthMiddleware::class);
+
+Router::get('/tax', [TaxController::class, 'index'], AuthMiddleware::class);
+Router::get('/tax/{id}', [TaxController::class, 'show'], AuthMiddleware::class);
+Router::get('/tax/new', [TaxController::class, 'create'], AuthMiddleware::class);
+Router::get('/tax/edit/{id}', [TaxController::class, 'edit'], AuthMiddleware::class);
+Router::post('/tax/store', [TaxController::class, 'store'], AuthMiddleware::class);
+Router::post('/tax/update/{id}', [TaxController::class, 'update'], AuthMiddleware::class);
+Router::post('/tax/destroy/{id}', [TaxController::class, 'destroy'], AuthMiddleware::class);

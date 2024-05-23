@@ -9,6 +9,15 @@ class ProductTypeRule implements BaseRule
 
     public static function validate($input)
     {
-        return filter_var($input, FILTER_VALIDATE_INT);
+        if (is_array($input)) {
+            foreach ($input as $item) {
+                if (filter_var($item, FILTER_VALIDATE_INT) === false) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            return filter_var($input, FILTER_VALIDATE_INT);
+        }
     }
 }

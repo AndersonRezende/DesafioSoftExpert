@@ -79,4 +79,18 @@ class ProductTypeRepository implements Repository
         }
         return false;
     }
+
+    public function findByTax($id)
+    {
+        $stmt = $this->db->prepare("SELECT product_type.* FROM product_type INNER JOIN tax_product on product_type.id = tax_product.id_product_type WHERE id_tax = :id");
+        $stmt->bindParam(':id', $id);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute();
+        $list = $stmt->fetchAll();
+        $productTypes = [];
+        foreach ($list as $productType) {
+            $productTypes[] = new ProductType($productType);
+        }
+        return $productTypes;
+    }
 }
