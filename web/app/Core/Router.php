@@ -71,8 +71,12 @@ class Router
         $url = preg_split('@/@', $requestUri, -1, PREG_SPLIT_NO_EMPTY);
 
         $route = $this->matchUri($requestUri, $_SERVER['REQUEST_METHOD']);
-        $parameters = $this->getParameters($route, $requestUri);
-        $this->buildController($route['controller'], $route['action'], $route['middleware'], $parameters);
+        if ($route !== false) {
+            $parameters = $this->getParameters($route, $requestUri);
+            $this->buildController($route['controller'], $route['action'], $route['middleware'], $parameters);
+        } else {
+            Error::throwError(Error::NOT_FOUND, 'Não foi possível encontrar o recurso solicitado.');
+        }
         die();
 
     }
