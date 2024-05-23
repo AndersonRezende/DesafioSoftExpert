@@ -4,27 +4,47 @@ namespace DesafioSoftExpert\Controllers;
 
 use DesafioSoftExpert\Core\Redirect;
 use DesafioSoftExpert\Core\Request;
-use DesafioSoftExpert\Core\Response;
+use DesafioSoftExpert\Core\Session;
 use DesafioSoftExpert\Core\View;
 use DesafioSoftExpert\Repositories\UserRepository;
 use DesafioSoftExpert\Requests\AuthRegisterRequest;
-use DesafioSoftExpert\Requests\BaseRequest;
 
 class AuthController extends Controller
 {
-    public function login()
+    public function login(Request $request)
     {
-        return View::render('auth/login');
+        $errors = $request->get('error');
+        return View::render('auth/login', ['errors' => $errors]);
     }
 
     public function logout()
     {
-
+        Session::destroySession();
+        return View::render('auth/login');
     }
 
-    public function authenticate()
+    public function authenticate(Request $request)
     {
-
+        $userRepository = new UserRepository();
+        $result = $userRepository->login($request->get('email'), $request->get('password'));
+        if ($result === false) {
+            $errors = ['error' => ['Login e/ou senha incorreto!' => 0]];
+            Redirect::to('/login', $errors);
+        } else {
+            $token = Session::auth($result);
+            if ($token != false) {
+                $result = $userRepository->setToken($result->getId(), $token);
+                if ($result === false) {
+                    $errors = ['error' => ['Não foi possível iniciar a sessão!' => 0]];
+                    Redirect::to('/login', $errors);
+                } else {
+                    Redirect::to('/');
+                }
+            } else {
+                $errors = ['error' => ['Não foi possível iniciar a sessão!' => 0]];
+                Redirect::to('/login', $errors);
+            }
+        }
     }
 
     public function register($request)

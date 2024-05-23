@@ -46,7 +46,7 @@ class UserRepository implements Repository
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $stmt->bindValue(1, $data['name']);
         $stmt->bindValue(2, $data['email']);
-        $stmt->bindValue(3, $data['password']);
+        $stmt->bindValue(3, password_hash($data['password'], PASSWORD_BCRYPT));
         $result = $stmt->execute();
         if ($result) {
             $user = new User($data);
@@ -64,5 +64,35 @@ class UserRepository implements Repository
     public function delete(int $id)
     {
         // TODO: Implement delete() method.
+    }
+
+    public function login(string $email, string $password)
+    {
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE email = :email");
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->bindValue(":email", $email);
+        $stmt->execute();
+        $user = new User($stmt->fetch(PDO::FETCH_ASSOC));
+        if ($user && password_verify($password, $user->getPassword())) {
+            return $user;
+        }
+        return false;
+    }
+
+    public function setToken($id, string $sessionToken): bool
+    {
+        $stmt = $this->db->prepare("UPDATE users SET session_token = :session_token WHERE id = :id");
+        $stmt->bindParam(':session_token', $sessionToken);
+        $stmt->bindParam(':id', $id);
+        return $stmt->execute();
+    }
+
+    public function getByToken($token): User
+    {
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE session_token = :session_token");
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->bindValue(":session_token", $token);
+        $stmt->execute();
+        return new User($stmt->fetch(PDO::FETCH_ASSOC));
     }
 }

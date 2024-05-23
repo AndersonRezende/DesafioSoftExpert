@@ -13,14 +13,23 @@
                                     <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
                                     <p class="text-white-50 mb-5">Informe seu login e senha!</p>
 
+                                    @if ($errors)
+                                    <div class="alert alert-danger" role="alert">
+                                        Ocorreu um erro ao validar o(s) seguinte(s) campo(s): <br>
+                                        @foreach ($errors as $key => $error)
+                                        {{ ucfirst($key) }}
+                                        @endforeach
+                                    </div>
+                                    @endif
+
                                     <div data-mdb-input-init class="form-outline form-white mb-4">
                                         <label class="form-label" for="typeEmailX">Email</label>
-                                        <input type="email" id="typeEmailX" class="form-control form-control-lg" required placeholder="Informe seu email"/>
+                                        <input name="email" type="email" id="typeEmailX" class="form-control form-control-lg" required placeholder="Informe seu email"/>
                                     </div>
 
                                     <div data-mdb-input-init class="form-outline form-white mb-4">
                                         <label class="form-label" for="typePasswordX">Senha</label>
-                                        <input type="password" id="typePasswordX" class="form-control form-control-lg" required placeholder="Informe sua senha"/>
+                                        <input name="password" type="password" id="typePasswordX" class="form-control form-control-lg" required placeholder="Informe sua senha"/>
                                     </div>
 
                                     <button data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-light btn-lg px-5" type="submit">Login</button>

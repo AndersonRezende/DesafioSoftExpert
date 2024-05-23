@@ -9,6 +9,8 @@ class User
     private $email;
     private $password;
 
+    private $session_token;
+
     /**
      * @param array $data
      */
@@ -90,5 +92,21 @@ class User
     public function setPassword($password): void
     {
         $this->password = $password;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSessionToken()
+    {
+        return $this->session_token;
+    }
+
+    /**
+     * @param mixed $session_token
+     */
+    public function setSessionToken($session_token): void
+    {
+        $this->session_token = $session_token;
     }
 }
