@@ -24,7 +24,7 @@ class ProductTypeController extends Controller
     public function store(Request $request)
     {
         $isValid = (new ProductTypeRequest($request))->validate();
-        if ($isValid) {
+        if ($isValid === true) {
             $result = (new ProductTypeRepository())->create($request->getPostVars());
             if ($result) {
                 Redirect::to('/product_types');
@@ -49,7 +49,7 @@ class ProductTypeController extends Controller
     public function update($id, Request $request)
     {
         $isValid = (new ProductTypeRequest($request))->validate();
-        if ($isValid) {
+        if ($isValid === true) {
             $repository = new ProductTypeRepository();
             $productType = $repository->find($id);
             if ($productType === false) {

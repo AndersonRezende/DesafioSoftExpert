@@ -13,9 +13,10 @@ class Product extends Model
     private $description;
     private $price;
     private $image;
-    private $type;
+    private $productType;
+    private $id_product_type;
 
-    public function __construct(array $attributes = [])
+    public function __construct(array $data = [])
     {
         if (!empty($data)) {
             $this->hydrate($data);
@@ -105,17 +106,33 @@ class Product extends Model
     /**
      * @return mixed
      */
-    public function getType()
+    public function getProductType()
     {
-        return $this->type;
+        return $this->productType;
     }
 
     /**
-     * @param mixed $type
+     * @param mixed $productType
      */
-    public function setType($type): void
+    public function setProductType($productType): void
     {
-        $this->type = $type;
+        $this->productType = $productType;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIdProductType()
+    {
+        return $this->id_product_type;
+    }
+
+    /**
+     * @param mixed $id_product_type
+     */
+    public function setIdProductType($id_product_type): void
+    {
+        $this->id_product_type = $id_product_type;
     }
 
 
