@@ -31,13 +31,17 @@ class UserRepository implements Repository
         return $users;
     }
 
-    public function find(int $id): User
+    public function find(int $id)
     {
         $stmt = $this->db->prepare("SELECT * FROM users WHERE id = :id");
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $stmt->bindValue(":id", $id);
         $stmt->execute();
-        return new User($stmt->fetch(PDO::FETCH_ASSOC));
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($result !== false) {
+            return new User($result);
+        }
+        return false;
     }
 
     public function create(array $data)
@@ -72,9 +76,12 @@ class UserRepository implements Repository
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $stmt->bindValue(":email", $email);
         $stmt->execute();
-        $user = new User($stmt->fetch(PDO::FETCH_ASSOC));
-        if ($user && password_verify($password, $user->getPassword())) {
-            return $user;
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($result != false) {
+            $user = new User($result);
+            if ($user && password_verify($password, $user->getPassword())) {
+                return $user;
+            }
         }
         return false;
     }
@@ -87,12 +94,16 @@ class UserRepository implements Repository
         return $stmt->execute();
     }
 
-    public function getByToken($token): User
+    public function getByToken($token)
     {
         $stmt = $this->db->prepare("SELECT * FROM users WHERE session_token = :session_token");
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $stmt->bindValue(":session_token", $token);
         $stmt->execute();
-        return new User($stmt->fetch(PDO::FETCH_ASSOC));
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($result != false) {
+            return new User($result);
+        }
+        return false;
     }
 }

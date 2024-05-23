@@ -15,7 +15,7 @@ class AuthMiddleware extends BaseMiddleware
             Redirect::to('/login');
         } else {
             $user = (new UserRepository())->getByToken($_SESSION['session_token']);
-            if ($user->getSessionToken() !== Session::get('session_token')) {
+            if ($user === false || $user->getSessionToken() !== Session::get('session_token')) {
                 Redirect::to('/login');
             }
         }

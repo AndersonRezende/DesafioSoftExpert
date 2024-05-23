@@ -19,8 +19,8 @@ class AuthController extends Controller
 
     public function logout()
     {
-        Session::destroySession();
-        return View::render('auth/login');
+        Session::destroy();
+        Redirect::to('/login');
     }
 
     public function authenticate(Request $request)
