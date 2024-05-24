@@ -38,6 +38,7 @@ services:
     restart: always
     volumes:
       - ../web/:/var/www/html
+      - ./etc/conf/php/php.ini:/usr/local/etc/php/php.ini:ro
     expose:
       - "9000"
     links:
@@ -64,6 +65,7 @@ services:
     volumes:
       - ../web:/var/www/html
       - ./etc/conf/nginx/default.conf:/etc/nginx/default.conf
+      - ./etc/conf/nginx/nginx.conf:/etc/nginx/nginx.conf
     links:
       - postgres
     depends_on:

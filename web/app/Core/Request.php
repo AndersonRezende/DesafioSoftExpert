@@ -95,4 +95,9 @@ class Request
     {
         return $this->headers;
     }
+
+    public function getFile($name)
+    {
+        return $_FILES[$name];
+    }
 }

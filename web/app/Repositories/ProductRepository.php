@@ -27,6 +27,7 @@ class ProductRepository implements Repository
             $products[] = new Product($product);
             $productType = (new ProductTypeRepository())->find($product['id_product_type']);
             $products[$index]->setProductType($productType);
+            $products[$index]->setImage($this->getImageAsString($product['image']));
         }
         return $products;
     }
@@ -42,6 +43,7 @@ class ProductRepository implements Repository
             $product = new Product($result);
             $productType = (new ProductTypeRepository())->find($result['id_product_type']);
             $product->setProductType($productType);
+            $product->setImage($this->getImageAsString($result['image']));
             return $product;
         }
         return false;
@@ -51,11 +53,14 @@ class ProductRepository implements Repository
     {
         $data['price'] = str_replace(',', '.', $data['price']);
         $data['product_type'] = intval($data['product_type']);
-        $stmt = $this->db->prepare("INSERT INTO products (name, description, price, id_product_type) VALUES(:name, :description, :price, :id_product_type)");
+        $image = file_get_contents($_FILES['image']['tmp_name']);
+        $stmt = $this->db->prepare("INSERT INTO products (sku, name, description, price, id_product_type, image) VALUES(:sku, :name, :description, :price, :id_product_type, :image)");
+        $stmt->bindParam(':sku', $data['sku']);
         $stmt->bindParam(':name', $data['name']);
         $stmt->bindParam(':description', $data['description']);
         $stmt->bindParam(':price', $data['price']);
         $stmt->bindParam(':id_product_type', $data['product_type']);
+        $stmt->bindParam(':image', $image, PDO::PARAM_LOB);
         $result = $stmt->execute();
         if ($result) {
             $product = new Product($data);
@@ -69,7 +74,17 @@ class ProductRepository implements Repository
     {
         $data['price'] = str_replace(',', '.', $data['price']);
         $data['product_type'] = intval($data['product_type']);
-        $stmt = $this->db->prepare("UPDATE products SET name = :name, description = :description, price = :price, id_product_type = :id_product_type WHERE id = :id");
+        $image = null;
+        if (isset($_FILES['image']) && $_FILES['image']['tmp_name']) {
+            $image = file_get_contents($_FILES['image']['tmp_name']);
+        }
+        if ($image) {
+            $stmt = $this->db->prepare("UPDATE products SET sku = :sku, name = :name, description = :description, price = :price, id_product_type = :id_product_type, image = :image WHERE id = :id");
+            $stmt->bindParam(':image', $image, PDO::PARAM_LOB);
+        } else {
+            $stmt = $this->db->prepare("UPDATE products SET sku = :sku, name = :name, description = :description, price = :price, id_product_type = :id_product_type WHERE id = :id");
+        }
+        $stmt->bindParam(':sku', $data['sku']);
         $stmt->bindParam(':name', $data['name']);
         $stmt->bindParam(':description', $data['description']);
         $stmt->bindParam(':price', $data['price']);
@@ -94,5 +109,13 @@ class ProductRepository implements Repository
             return true;
         }
         return false;
+    }
+
+    private function getImageAsString($imageStream)
+    {
+        if (is_resource($imageStream)) {
+            return stream_get_contents($imageStream);
+        }
+        return $imageStream;
     }
 }

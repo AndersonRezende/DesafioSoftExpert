@@ -3,12 +3,14 @@
 namespace DesafioSoftExpert\Models;
 
 use DesafioSoftExpert\Traits\Hydrator;
+use DesafioSoftExpert\Traits\Money;
 
 class Product extends Model
 {
-    use Hydrator;
+    use Hydrator, Money;
 
     private $id;
+    private $sku;
     private $name;
     private $description;
     private $price;
@@ -37,6 +39,22 @@ class Product extends Model
     public function setId($id): void
     {
         $this->id = $id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSku()
+    {
+        return $this->sku;
+    }
+
+    /**
+     * @param mixed $sku
+     */
+    public function setSku($sku): void
+    {
+        $this->sku = $sku;
     }
 
     /**
@@ -92,7 +110,7 @@ class Product extends Model
      */
     public function getImage()
     {
-        return $this->image;
+        return base64_encode($this->image);
     }
 
     /**

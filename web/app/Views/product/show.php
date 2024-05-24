@@ -9,14 +9,15 @@
             <div class="my-5">
                 <div class="row d-flex justify-content-center">
                     <div class="card" style="width: 18rem;">
-                        <img src="..." class="card-img-top py-5" alt="Imagem {{$product->getName()}}">
+                        <img src="data:image/jpeg;base64,{{$product->getImage()}}" class="card-img-top py-5" alt="Imagem {{$product->getName()}}">
                         <div class="card-body">
                             <h5 class="card-title">{{$product->getName()}}</h5>
                             <p class="card-text">{{$product->getDescription()}}</p>
                         </div>
                         <ul class="list-group list-group-flush">
+                            <li class="list-group-item">{{$product->getSku()}}</li>
                             <li class="list-group-item">{{$product->getProductType()->getName()}}</li>
-                            <li class="list-group-item">R$ {{number_format($product->getPrice(), 2)}}</li>
+                            <li class="list-group-item">{{$product->formattedMoney($product->getPrice())}}</li>
                         </ul>
                         <div class="card-body">
                             <div class="row">

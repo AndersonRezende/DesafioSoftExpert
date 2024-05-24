@@ -7,7 +7,7 @@
             </div>
 
             <div class="my-5">
-                <form action="/products/update/{{$product->getId()}}" method="post">
+                <form action="/products/update/{{$product->getId()}}" method="post" enctype="multipart/form-data">
                     <div class="row mb-4">
                         <div class="col">
                             <div data-mdb-input-init class="form-outline form-white mb-4">
@@ -17,10 +17,29 @@
                         </div>
 
                         <div class="col">
+                            <div data-mdb-input-init class="form-outline form-white mb-4">
+                                <label class="form-label" for="typeSku">SKU</label>
+                                <input name="sku" type="text" id="typeSku" class="form-control form-control-lg" required value="{{$product->getSku()}}"/>
+                            </div>
+                        </div>
+
+                        <div class="col">
                             <div class="form-outline form-white mb-4">
                                 <label class="form-label" for="priceInput">Preço</label>
                                 <input name="price" type="text" id="priceInput" class="form-control form-control-lg" step="0.01" min="0" max="10" required value="{{$product->getPrice()}}"/>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label for="formFile" class="form-label">Imagem</label>
+                                <input name="image" class="form-control" type="file" id="formFile" accept="image/*">
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <img src="data:image/jpeg;base64,{{$product->getImage()}}" class="card-img-top py-5" alt="Imagem {{$product->getName()}}" style="width: 18rem;" id="preview">
                         </div>
                     </div>
 
@@ -42,6 +61,6 @@
                 </form>
             </div>
         </div>
-        </div>
     </section>
+    <script src="../../updateFormImage.js"></script>
 </main>

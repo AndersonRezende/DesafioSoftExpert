@@ -3,10 +3,11 @@
 namespace DesafioSoftExpert\Models;
 
 use DesafioSoftExpert\Traits\Hydrator;
+use DesafioSoftExpert\Traits\Money;
 
 class Tax extends Model
 {
-    use Hydrator;
+    use Hydrator, Money;
 
     private $id;
     private $name;

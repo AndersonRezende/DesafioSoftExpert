@@ -4,6 +4,7 @@ namespace DesafioSoftExpert\Requests;
 
 use DesafioSoftExpert\Core\Request;
 use DesafioSoftExpert\Rules\DescriptionRule;
+use DesafioSoftExpert\Rules\ImageRule;
 use DesafioSoftExpert\Rules\NameRule;
 use DesafioSoftExpert\Rules\NumericRule;
 use DesafioSoftExpert\Rules\ProductTypeRule;
@@ -32,7 +33,8 @@ class ProductRequest implements BaseRequest
             'name' => NameRule::validate($this->request->get('name')),
             'price' => NumericRule::validate(str_replace(',', '.', $this->request->get('price'))),
             'description' => DescriptionRule::validate($this->request->get('description')),
-            'product_type' => ProductTypeRule::validate($this->request->get('product_type'))
+            'product_type' => ProductTypeRule::validate($this->request->get('product_type')),
+            'image' => ImageRule::Validate($this->request->getFile('image')),
         ];
     }
 }
