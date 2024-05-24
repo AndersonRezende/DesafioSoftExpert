@@ -17,6 +17,7 @@ class Product extends Model
     private $image;
     private $productType;
     private $id_product_type;
+    private $taxes;
 
     public function __construct(array $data = [])
     {
@@ -153,5 +154,28 @@ class Product extends Model
         $this->id_product_type = $id_product_type;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getTaxes()
+    {
+        return $this->taxes;
+    }
 
+    /**
+     * @param mixed $taxes
+     */
+    public function setTaxes($taxes): void
+    {
+        $this->taxes = $taxes;
+    }
+
+    public function getPriceWithTaxes()
+    {
+        $price = 0;
+        foreach ($this->taxes as $tax) {
+            $price += ($tax->getValue() / 100 + 1) * $this->getPrice();
+        }
+        return $price;
+    }
 }

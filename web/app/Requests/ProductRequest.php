@@ -29,12 +29,20 @@ class ProductRequest implements BaseRequest
 
     public function rules(): array
     {
+        if ($this->request->getFile('image')['size'] != 0) {
+            return [
+                'name' => NameRule::validate($this->request->get('name')),
+                'price' => NumericRule::validate(str_replace(',', '.', $this->request->get('price'))),
+                'description' => DescriptionRule::validate($this->request->get('description')),
+                'product_type' => ProductTypeRule::validate($this->request->get('product_type')),
+                'image' => ImageRule::Validate($this->request->getFile('image')),
+            ];
+        }
         return [
             'name' => NameRule::validate($this->request->get('name')),
             'price' => NumericRule::validate(str_replace(',', '.', $this->request->get('price'))),
             'description' => DescriptionRule::validate($this->request->get('description')),
             'product_type' => ProductTypeRule::validate($this->request->get('product_type')),
-            'image' => ImageRule::Validate($this->request->getFile('image')),
         ];
     }
 }

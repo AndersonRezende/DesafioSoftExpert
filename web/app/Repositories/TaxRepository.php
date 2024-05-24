@@ -159,4 +159,20 @@ class TaxRepository implements Repository
         }
         return null;
     }
+
+    public function getByProductTypeIds(array $ids)
+    {
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $stmt = $this->db->prepare("SELECT taxes.* FROM taxes INNER JOIN tax_product on taxes.id = tax_product.id_tax WHERE tax_product.id_product_type IN ($placeholders)");
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute($ids);
+        $list = $stmt->fetchAll();
+        $taxes = [];
+        foreach ($list as $index => $tax) {
+            $taxes[] = new Tax($tax);
+            $productTypes = (new ProductTypeRepository())->findByTax($taxes[$index]->getId());
+            $taxes[$index]->setProductTypes($productTypes);
+        }
+        return $taxes;
+    }
 }

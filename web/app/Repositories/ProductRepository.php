@@ -28,6 +28,8 @@ class ProductRepository implements Repository
             $productType = (new ProductTypeRepository())->find($product['id_product_type']);
             $products[$index]->setProductType($productType);
             $products[$index]->setImage($this->getImageAsString($product['image']));
+            $taxes = (new TaxRepository())->getByProductType($productType->getId());
+            $products[$index]->setTaxes($taxes);
         }
         return $products;
     }
@@ -117,5 +119,24 @@ class ProductRepository implements Repository
             return stream_get_contents($imageStream);
         }
         return $imageStream;
+    }
+
+    public function getByIds(array $ids)
+    {
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $stmt = $this->db->prepare("SELECT * FROM products WHERE id IN ($placeholders)");
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute($ids);
+        $list = $stmt->fetchAll();
+        $products = [];
+        foreach ($list as $index => $product) {
+            $products[] = new Product($product);
+            $productType = (new ProductTypeRepository())->find($product['id_product_type']);
+            $products[$index]->setProductType($productType);
+            $products[$index]->setImage($this->getImageAsString($product['image']));
+            $taxes = (new TaxRepository())->getByProductType($productType->getId());
+            $products[$index]->setTaxes($taxes);
+        }
+        return $products;
     }
 }

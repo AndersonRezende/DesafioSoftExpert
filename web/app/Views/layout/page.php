@@ -6,6 +6,7 @@
     <title>Desafio SoftExpert</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="../floatingdiv.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 </head>
 <body>
@@ -24,6 +25,12 @@
                 <ul class="navbar-nav col-lg-9 justify-content-lg-end">
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/sales">
+                            <i class="bi bi-cart"></i>
+                            Vendas
+                        </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/user">

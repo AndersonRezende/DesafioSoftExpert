@@ -1,0 +1,11 @@
+.floating-div {
+    position: fixed;
+    top: 50px; /* Inicialmente fixo na parte superior da janela */
+    right: 50px;
+    width: 200px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    cursor: move;
+}

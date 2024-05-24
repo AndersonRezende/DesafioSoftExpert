@@ -4,6 +4,7 @@ use DesafioSoftExpert\Controllers\AuthController;
 use DesafioSoftExpert\Controllers\HomeController;
 use DesafioSoftExpert\Controllers\ProductController;
 use DesafioSoftExpert\Controllers\ProductTypeController;
+use DesafioSoftExpert\Controllers\SalesController;
 use DesafioSoftExpert\Controllers\TaxController;
 use DesafioSoftExpert\Controllers\UserController;
 use DesafioSoftExpert\Core\Router;
@@ -18,8 +19,6 @@ Router::get('/register', [AuthController::class, 'register']);
 Router::post('/register', [AuthController::class, 'registerPost']);
 
 Router::get('/home', [HomeController::class, 'index'], AuthMiddleware::class);
-Router::get('/home/teste', [HomeController::class, 'index'], AuthMiddleware::class);
-Router::post('/home/teste', [HomeController::class, 'index'], \DesafioSoftExpert\Middleware\BaseMiddleware::class);
 
 Router::get('/user', [UserController::class, 'index'], AuthMiddleware::class);
 Router::get('/user/{id}', [UserController::class, 'show'], AuthMiddleware::class);
@@ -47,3 +46,9 @@ Router::get('/tax/edit/{id}', [TaxController::class, 'edit'], AuthMiddleware::cl
 Router::post('/tax/store', [TaxController::class, 'store'], AuthMiddleware::class);
 Router::post('/tax/update/{id}', [TaxController::class, 'update'], AuthMiddleware::class);
 Router::post('/tax/destroy/{id}', [TaxController::class, 'destroy'], AuthMiddleware::class);
+
+Router::get('/sales', [SalesController::class, 'index'], AuthMiddleware::class);
+Router::get('/sales/{id}', [SalesController::class, 'show'], AuthMiddleware::class);
+Router::get('/sales/new', [SalesController::class, 'create'], AuthMiddleware::class);
+Router::post('/sales/store', [SalesController::class, 'store'], AuthMiddleware::class);
+Router::post('/sales/destroy/{id}', [SalesController::class, 'destroy'], AuthMiddleware::class);
