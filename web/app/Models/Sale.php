@@ -3,10 +3,11 @@
 namespace DesafioSoftExpert\Models;
 
 use DesafioSoftExpert\Traits\Hydrator;
+use DesafioSoftExpert\Traits\Money;
 
 class Sale extends Model
 {
-    use Hydrator;
+    use Hydrator, Money;
 
     private $id;
     private $total_base_value;
@@ -17,6 +18,7 @@ class Sale extends Model
     private $finished;
     private $created_at;
     private $updated_at;
+    private $productsSale;
 
     public function __construct(array $data = [])
     {
@@ -167,5 +169,27 @@ class Sale extends Model
     public function setUpdatedAt($updated_at): void
     {
         $this->updated_at = $updated_at;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProductsSale()
+    {
+        return $this->productsSale;
+    }
+
+    /**
+     * @param mixed $productsSale
+     */
+    public function setProductsSale($productsSale): void
+    {
+        $this->productsSale = $productsSale;
+    }
+
+    public function totalTax()
+    {
+        $value = ($this->total_value_with_tax - $this->total_base_value);
+        return max($value, 0);
     }
 }

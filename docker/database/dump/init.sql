@@ -43,7 +43,6 @@ create table "tax_product"(
 create table "sales"(
                         id                      SERIAL PRIMARY KEY,
                         total_base_value        NUMERIC(15, 5) NOT NULL,
-                        total_tax_value         NUMERIC(15, 5) NOT NULL,
                         total_value_with_tax    NUMERIC(15, 5) NOT NULL,
                         items_count             INT,
                         products_count          INT,

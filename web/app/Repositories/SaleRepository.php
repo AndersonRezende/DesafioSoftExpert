@@ -4,6 +4,7 @@ namespace DesafioSoftExpert\Repositories;
 
 use DesafioSoftExpert\Core\Database;
 use DesafioSoftExpert\Models\Product;
+use DesafioSoftExpert\Models\ProductSale;
 use DesafioSoftExpert\Models\Sale;
 use Exception;
 use PDO;
@@ -35,16 +36,25 @@ class SaleRepository implements Repository
 
     public function find(int $id)
     {
-        $stmt = $this->db->prepare("SELECT * FROM products WHERE id = :id");
+        $stmt = $this->db->prepare("SELECT * FROM sales WHERE id = :id");
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $stmt->bindValue(":id", $id);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($result != false) {
-            $product = new Product($result);
-            $productType = (new ProductTypeRepository())->find($result['id_product_type']);
-            $product->setProductType($productType);
-            return $product;
+            $sale = new Sale($result);
+            $stmt = $this->db->prepare("SELECT * FROM product_sale WHERE id_sale = :id");
+            $stmt->setFetchMode(PDO::FETCH_ASSOC);
+            $stmt->bindValue(":id", $id);
+            $stmt->execute();
+            $list = $stmt->fetchAll();
+            $productSales = [];
+            foreach ($list as $index => $productSale) {
+                $productSales[$index] = new ProductSale($productSale);
+                $productSales[$index]->setProduct((new ProductRepository())->find($productSale['id_product']));
+            }
+            $sale->setProductsSale($productSales);
+            return $sale;
         }
         return false;
     }
@@ -92,7 +102,6 @@ class SaleRepository implements Repository
                 $stmt->bindValue(':quantity', $productSale->getQuantity());
                 $stmt->bindValue(':product_price', $productSale->getProductPrice());
                 $stmt->bindValue(':product_price_with_tax', $productSale->getProductPriceWithTax());
-                $stmt->execute();
                 if (!$stmt->execute()) {
                     throw new \Exception("Erro ao cadastrar itens da venda");
                 }

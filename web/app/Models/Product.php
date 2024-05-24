@@ -173,8 +173,10 @@ class Product extends Model
     public function getPriceWithTaxes()
     {
         $price = 0;
-        foreach ($this->taxes as $tax) {
-            $price += ($tax->getValue() / 100 + 1) * $this->getPrice();
+        if (!is_null($this->taxes)) {
+            foreach ($this->taxes as $tax) {
+                $price += ($tax->getValue() / 100 + 1) * $this->getPrice();
+            }
         }
         return $price;
     }

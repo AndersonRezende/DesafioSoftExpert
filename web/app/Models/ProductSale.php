@@ -3,16 +3,18 @@
 namespace DesafioSoftExpert\Models;
 
 use DesafioSoftExpert\Traits\Hydrator;
+use DesafioSoftExpert\Traits\Money;
 
 class ProductSale
 {
-    use Hydrator;
+    use Hydrator, Money;
     private $id;
     private $id_sale;
     private $id_product;
     private $quantity;
     private $product_price;
     private $product_price_with_tax;
+    private $product;
 
     public function __construct(array $data = [])
     {
@@ -117,5 +119,25 @@ class ProductSale
         $this->product_price_with_tax = $product_price_with_tax;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getProduct()
+    {
+        return $this->product;
+    }
 
+    /**
+     * @param mixed $product
+     */
+    public function setProduct($product): void
+    {
+        $this->product = $product;
+    }
+
+    public function totalTax()
+    {
+        $value = ($this->product_price_with_tax - $this->product_price) * $this->quantity;
+        return max($value, 0);
+    }
 }

@@ -45,40 +45,11 @@ class SalesController extends Controller
 
     public function show($id)
     {
-        $product = (new ProductRepository())->find($id);
-        if ($product === false) {
+        $sale = (new SaleRepository())->find($id);
+        if ($sale === false) {
             Redirect::to('/sales');
         }
-        return View::render('sale/show', ['product' => $product]);
-    }
-
-    public function edit($id)
-    {
-        $product = (new ProductRepository())->find($id);
-        $productTypes = (new ProductTypeRepository())->all();
-        if ($product === false) {
-            Redirect::to('/sales');
-        }
-        return View::render('sale/edit', ['product' => $product, 'productTypes' => $productTypes]);
-    }
-
-    public function update($id, Request $request)
-    {
-        $isValid = (new ProductRequest($request))->validate();
-        if ($isValid === true) {
-            $repository = new ProductRepository();
-            $product = $repository->find($id);
-            if ($product === false) {
-                Redirect::to('/sales');
-            }
-            $product = $repository->update($id, $request->getPostVars());
-            if ($product === false) {
-                Redirect::to('/sales/edit/' . $id);
-            }
-            Redirect::to('/sales');
-        } else {
-            Redirect::to('/sales/edit/' . $id, $isValid);
-        }
+        return View::render('sale/show', ['sale' => $sale, 'saleProducts' => $sale->getProductsSale()]);
     }
 
     public function destroy($id)
