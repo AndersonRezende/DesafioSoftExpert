@@ -8,7 +8,7 @@ class Database
 {
     private static PDO $connection;
 
-    public static function getConnection()
+    public static function getConnection(): PDO
     {
         if (!isset(self::$connection)) {
             $dbHost = getenv('DB_HOST');
