@@ -9,7 +9,9 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd \
-    && docker-php-ext-install pdo pdo_pgsql
+    && docker-php-ext-install pdo pdo_pgsql \
+    && pecl install xdebug-3.1.5 \
+    && docker-php-ext-enable xdebug
 
 EXPOSE 9000
 CMD ["php-fpm"]
