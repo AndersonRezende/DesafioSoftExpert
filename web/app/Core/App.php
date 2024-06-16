@@ -4,8 +4,8 @@ namespace DesafioSoftExpert\Core;
 
 class App
 {
-    public function __construct()
+    public function __construct(ContainerInterface $container)
     {
-        new Router();
+        new Router($container);
     }
 }

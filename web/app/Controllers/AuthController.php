@@ -11,6 +11,13 @@ use DesafioSoftExpert\Requests\AuthRegisterRequest;
 
 class AuthController extends Controller
 {
+    private UserRepository $userRepository;
+
+    public function __construct(UserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
     public function login(Request $request)
     {
         $errors = $request->get('error');
@@ -25,15 +32,14 @@ class AuthController extends Controller
 
     public function authenticate(Request $request)
     {
-        $userRepository = new UserRepository();
-        $result = $userRepository->login($request->get('email'), $request->get('password'));
+        $result = $this->userRepository->login($request->get('email'), $request->get('password'));
         if ($result === false) {
             $errors = ['error' => ['Login e/ou senha incorreto!' => 0]];
             Redirect::to('/login', $errors);
         } else {
             $token = Session::auth($result);
             if ($token != false) {
-                $result = $userRepository->setToken($result->getId(), $token);
+                $result = $this->userRepository->setToken($result->getId(), $token);
                 if ($result === false) {
                     $errors = ['error' => ['Não foi possível iniciar a sessão!' => 0]];
                     Redirect::to('/login', $errors);
@@ -47,7 +53,7 @@ class AuthController extends Controller
         }
     }
 
-    public function register($request)
+    public function register(Request $request)
     {
         $errors = $request->get('error');
         return View::render('auth/register', ['errors' => $errors]);
@@ -57,8 +63,7 @@ class AuthController extends Controller
     {
         $isValid = (new AuthRegisterRequest($request))->validate();
         if ($isValid === true) {
-            $userRepository = new UserRepository();
-            $result = $userRepository->create($request->getPostVars());
+            $result = $this->userRepository->create($request->getPostVars());
             if ($result) {
                 Redirect::to('/login');
             } else {

@@ -2,16 +2,17 @@
 
 namespace DesafioSoftExpert\Core;
 
-use DesafioSoftExpert\Controllers\ErrorController;
 use DesafioSoftExpert\Error\Error;
 
 class Router
 {
     private static string $parametersRegex = '/\{([a-zA-Z]+)}/';
     public static array $routes = array();
+    private ContainerInterface $container;
 
-    public function __construct()
+    public function __construct(ContainerInterface $container)
     {
+        $this->container = $container;
         $this->buildUri();
     }
 
@@ -68,7 +69,6 @@ class Router
     {
         $requestUri = $_SERVER['REQUEST_URI'];
         $requestUri = preg_replace('/\?.*/', '', $requestUri);
-        $url = preg_split('@/@', $requestUri, -1, PREG_SPLIT_NO_EMPTY);
 
         $route = $this->matchUri($requestUri, $_SERVER['REQUEST_METHOD']);
         if ($route !== false) {
@@ -96,7 +96,7 @@ class Router
             call_user_func([$middleware, 'handle'], $request);
         }
         try {
-            $this->sendResponse(call_user_func_array([$controller, $action], $parameters));
+            $this->sendResponse((new ControllerFactory($this->container, $controller, $action, $parameters))->execute());
         } catch (\Exception $e) {
             Error::throwError(Error::NOT_FOUND, 'Não foi possível encontrar o recurso solicitado.');
         }

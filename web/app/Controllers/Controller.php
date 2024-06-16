@@ -2,7 +2,7 @@
 
 namespace DesafioSoftExpert\Controllers;
 
-class Controller
+abstract class Controller
 {
 
 }

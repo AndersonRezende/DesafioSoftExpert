@@ -8,17 +8,21 @@ use DesafioSoftExpert\Repositories\UserRepository;
 
 class UserController extends Controller
 {
+    private UserRepository $userRepository;
+
+    public function __construct(UserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
     public function index()
     {
-        $userRepository = new UserRepository();
-        $users = $userRepository->all();
+        $users = $this->userRepository->all();
         return View::render('user/index', ['users' => $users]);
     }
 
     public function show($id)
     {
-        $userRepository = new UserRepository();
-        $user = $userRepository->find($id);
+        $user = $this->userRepository->find($id);
         if ($user === false) {
             Redirect::to('/user');
         }
@@ -28,10 +32,5 @@ class UserController extends Controller
     public function create()
     {
         return View::render('user/create');
-    }
-
-    public function list()
-    {
-
     }
 }

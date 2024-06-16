@@ -7,20 +7,32 @@ use DesafioSoftExpert\Core\Request;
 use DesafioSoftExpert\Core\View;
 use DesafioSoftExpert\Repositories\TaxRepository;
 use DesafioSoftExpert\Repositories\ProductTypeRepository;
-use DesafioSoftExpert\Requests\ProductRequest;
 use DesafioSoftExpert\Requests\TaxRequest;
 
 class TaxController extends Controller
 {
+    private TaxRepository $taxRepository;
+    private ProductTypeRepository $productTypeRepository;
+
+    /**
+     * @param TaxRepository $taxRepository
+     * @param ProductTypeRepository $productTypeRepository
+     */
+    public function __construct(TaxRepository $taxRepository, ProductTypeRepository $productTypeRepository)
+    {
+        $this->taxRepository = $taxRepository;
+        $this->productTypeRepository = $productTypeRepository;
+    }
+
     public function index()
     {
-        $taxes = (new TaxRepository())->all();
+        $taxes = $this->taxRepository->all();
         return View::render('product_type_tax/index', ['taxes' => $taxes]);
     }
 
     public function create(Request $request)
     {
-        $productTypes = (new ProductTypeRepository())->all();
+        $productTypes = $this->productTypeRepository->all();
         $errors = $request->get('error');
         return View::render('product_type_tax/create', ['productTypes' => $productTypes, 'errors' => $errors]);
     }
@@ -29,7 +41,7 @@ class TaxController extends Controller
     {
         $isValid = (new TaxRequest($request))->validate();
         if ($isValid === true) {
-            $result = (new TaxRepository())->create($request->getPostVars());
+            $result = $this->taxRepository->create($request->getPostVars());
             if ($result) {
                 Redirect::to('/tax');
             } else {
@@ -39,12 +51,11 @@ class TaxController extends Controller
         } else {
             Redirect::to('/tax/new', $isValid);
         }
-
     }
 
     public function show($id)
     {
-        $tax = (new TaxRepository())->find($id);
+        $tax = $this->taxRepository->find($id);
         if ($tax === false) {
             Redirect::to('/tax');
         }
@@ -53,8 +64,8 @@ class TaxController extends Controller
 
     public function edit($id, Request $request)
     {
-        $tax = (new TaxRepository())->find($id);
-        $productTypes = (new ProductTypeRepository())->all();
+        $tax = $this->taxRepository->find($id);
+        $productTypes = $this->productTypeRepository->all();
         $errors = $request->get('error');
         if ($tax === false) {
             Redirect::to('/tax');
@@ -66,12 +77,11 @@ class TaxController extends Controller
     {
         $isValid = (new TaxRequest($request))->validate();
         if ($isValid === true) {
-            $repository = new TaxRepository();
-            $tax = $repository->find($id);
+            $tax = $this->taxRepository->find($id);
             if ($tax === false) {
                 Redirect::to('/tax');
             }
-            $tax = $repository->update($id, $request->getPostVars());
+            $tax = $this->taxRepository->update($id, $request->getPostVars());
             if ($tax === false) {
                 Redirect::to('/tax/edit/' . $id);
             }
@@ -83,7 +93,7 @@ class TaxController extends Controller
 
     public function destroy($id)
     {
-        $tax = (new TaxRepository())->delete($id);
+        $tax = $this->taxRepository->delete($id);
         if ($tax === false) {
             $errors = ['error' => ['Não foi possível remover o registro!' => 0]];
             Redirect::to('/tax', $errors);

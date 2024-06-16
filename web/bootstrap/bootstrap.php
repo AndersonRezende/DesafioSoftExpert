@@ -1,6 +1,8 @@
 <?php
 
 use DesafioSoftExpert\Core\App;
+use DesafioSoftExpert\Core\Container;
+use DesafioSoftExpert\Core\Database;
 use DesafioSoftExpert\Core\Session;
 use Dotenv\Dotenv;
 
@@ -11,4 +13,7 @@ $dotenv->load();
 
 Session::start();
 
-$app = new App();
+$container = new Container();
+$container->set('pdo', Database::getConnection());
+
+$app = new App($container);

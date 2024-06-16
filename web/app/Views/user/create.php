@@ -3,8 +3,17 @@
     <section class="py-5 text-center container">
         <div class="row py-lg-5">
             <div class="col-lg-12 col-md-8 mx-auto">
-                <h1 class="fw-light mb-5">Cadastro de Produto</h1>
+                <h1 class="fw-light mb-5">Cadastro de Usuário</h1>
             </div>
+
+            @if ($errors)
+            <div class="alert alert-danger" role="alert">
+                Ocorreu um erro ao validar o(s) seguinte(s) campo(s): <br>
+                @foreach ($errors as $key => $error)
+                {{ ucfirst($key) }}
+                @endforeach
+            </div>
+            @endif
 
             <div class="my-5">
                 <form action="/users/store" method="post">
@@ -19,7 +28,7 @@
                         <div class="col-12">
                             <div class="form-outline form-white mb-4">
                                 <label class="form-label" for="priceInput">Email</label>
-                                <input name="price" type="number" id="priceInput" class="form-control form-control-lg" required/>
+                                <input name="email" type="email" id="priceInput" class="form-control form-control-lg" required/>
                             </div>
                         </div>
                     </div>
@@ -40,8 +49,7 @@
                         </div>
                     </div>
 
-
-                    <button type="button" class="btn btn-success btn-lg">Salvar</button>
+                    <button type="submit" class="btn btn-success btn-lg">Salvar</button>
                 </form>
             </div>
         </div>

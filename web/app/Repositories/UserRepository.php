@@ -8,11 +8,11 @@ use PDO;
 
 class UserRepository implements Repository
 {
-    protected $db;
+    protected PDO $pdo;
 
-    public function __construct()
+    public function __construct(PDO $pdo)
     {
-        $this->db = Database::getConnection();
+        $this->pdo = $pdo;
     }
 
     /**
@@ -20,7 +20,7 @@ class UserRepository implements Repository
      */
     public function all(): array
     {
-        $stmt = $this->db->prepare("SELECT * FROM users");
+        $stmt = $this->pdo->prepare("SELECT * FROM users");
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $stmt->execute();
         $list = $stmt->fetchAll();
@@ -33,7 +33,7 @@ class UserRepository implements Repository
 
     public function find(int $id)
     {
-        $stmt = $this->db->prepare("SELECT * FROM users WHERE id = :id");
+        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE id = :id");
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $stmt->bindValue(":id", $id);
         $stmt->execute();
@@ -46,7 +46,7 @@ class UserRepository implements Repository
 
     public function create(array $data)
     {
-        $stmt = $this->db->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
+        $stmt = $this->pdo->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $stmt->bindValue(1, $data['name']);
         $stmt->bindValue(2, $data['email']);
@@ -54,7 +54,7 @@ class UserRepository implements Repository
         $result = $stmt->execute();
         if ($result) {
             $user = new User($data);
-            $user->setId($this->db->lastInsertId());
+            $user->setId($this->pdo->lastInsertId());
             return $user;
         }
         return $result;
@@ -72,7 +72,7 @@ class UserRepository implements Repository
 
     public function login(string $email, string $password)
     {
-        $stmt = $this->db->prepare("SELECT * FROM users WHERE email = :email");
+        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE email = :email");
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $stmt->bindValue(":email", $email);
         $stmt->execute();
@@ -88,7 +88,7 @@ class UserRepository implements Repository
 
     public function setToken($id, string $sessionToken): bool
     {
-        $stmt = $this->db->prepare("UPDATE users SET session_token = :session_token WHERE id = :id");
+        $stmt = $this->pdo->prepare("UPDATE users SET session_token = :session_token WHERE id = :id");
         $stmt->bindParam(':session_token', $sessionToken);
         $stmt->bindParam(':id', $id);
         return $stmt->execute();
@@ -96,7 +96,7 @@ class UserRepository implements Repository
 
     public function getByToken($token)
     {
-        $stmt = $this->db->prepare("SELECT * FROM users WHERE session_token = :session_token");
+        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE session_token = :session_token");
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $stmt->bindValue(":session_token", $token);
         $stmt->execute();

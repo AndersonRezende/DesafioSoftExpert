@@ -10,9 +10,19 @@ use DesafioSoftExpert\Requests\ProductTypeRequest;
 
 class ProductTypeController extends Controller
 {
+    private ProductTypeRepository $productTypeRepository;
+
+    /**
+     * @param ProductTypeRepository $productTypeRepository
+     */
+    public function __construct(ProductTypeRepository $productTypeRepository)
+    {
+        $this->productTypeRepository = $productTypeRepository;
+    }
+
     public function index()
     {
-        $productTypes = (new ProductTypeRepository())->all();
+        $productTypes = $this->productTypeRepository->all();
         return View::render('product_type/index', ['productTypes' => $productTypes]);
     }
 
@@ -25,7 +35,7 @@ class ProductTypeController extends Controller
     {
         $isValid = (new ProductTypeRequest($request))->validate();
         if ($isValid === true) {
-            $result = (new ProductTypeRepository())->create($request->getPostVars());
+            $result = $this->productTypeRepository->create($request->getPostVars());
             if ($result) {
                 Redirect::to('/product_types');
             } else {
@@ -39,7 +49,7 @@ class ProductTypeController extends Controller
 
     public function edit($id)
     {
-        $productType = (new ProductTypeRepository())->find($id);
+        $productType = $this->productTypeRepository->find($id);
         if ($productType === false) {
             Redirect::to('/product_type');
         }
@@ -67,7 +77,7 @@ class ProductTypeController extends Controller
 
     public function destroy($id)
     {
-        $productType = (new ProductTypeRepository())->delete($id);
+        $productType = $this->productTypeRepository->delete($id);
         if ($productType === false) {
             $errors = ['error' => ['Não foi possível remover o registro!' => 0]];
             Redirect::to('/product_types', $errors);

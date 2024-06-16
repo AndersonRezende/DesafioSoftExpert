@@ -6,23 +6,34 @@ use DesafioSoftExpert\Core\Redirect;
 use DesafioSoftExpert\Core\Request;
 use DesafioSoftExpert\Core\View;
 use DesafioSoftExpert\Repositories\ProductRepository;
-use DesafioSoftExpert\Repositories\ProductTypeRepository;
 use DesafioSoftExpert\Repositories\SaleRepository;
-use DesafioSoftExpert\Requests\ProductRequest;
 use DesafioSoftExpert\Requests\SaleRequest;
 use DesafioSoftExpert\Service\SaleService;
 
 class SalesController extends Controller
 {
+    private SaleRepository $saleRepository;
+    private ProductRepository $productRepository;
+
+    /**
+     * @param SaleRepository $saleRepository
+     * @param ProductRepository $productRepository
+     */
+    public function __construct(SaleRepository $saleRepository, ProductRepository $productRepository)
+    {
+        $this->saleRepository = $saleRepository;
+        $this->productRepository = $productRepository;
+    }
+
     public function index()
     {
-        $sales = (new SaleRepository())->all();
+        $sales = $this->saleRepository->all();
         return View::render('sale/index', ['sales' => $sales]);
     }
 
     public function create()
     {
-        $products = (new ProductRepository())->all();
+        $products = $this->productRepository->all();
         return View::render('sale/create', ['products' => $products]);
     }
 
@@ -45,7 +56,7 @@ class SalesController extends Controller
 
     public function show($id)
     {
-        $sale = (new SaleRepository())->find($id);
+        $sale = $this->saleRepository->find($id);
         if ($sale === false) {
             Redirect::to('/sales');
         }
@@ -54,7 +65,7 @@ class SalesController extends Controller
 
     public function destroy($id)
     {
-        $product = (new ProductRepository())->delete($id);
+        $product = $this->productRepository->delete($id);
         if ($product === false) {
             $errors = ['error' => ['Não foi possível remover o registro!' => 0]];
             Redirect::to('/sales', $errors);

@@ -11,9 +11,19 @@ use DesafioSoftExpert\Requests\ProductRequest;
 
 class ProductController extends Controller
 {
+    private ProductRepository $productRepository;
+
+    /**
+     * @param ProductRepository $productRepository
+     */
+    public function __construct(ProductRepository $productRepository)
+    {
+        $this->productRepository = $productRepository;
+    }
+
     public function index()
     {
-        $products = (new ProductRepository())->all();
+        $products = $this->productRepository->all();
         return View::render('product/index', ['products' => $products]);
     }
 
@@ -27,7 +37,7 @@ class ProductController extends Controller
     {
         $isValid = (new ProductRequest($request))->validate();
         if ($isValid === true) {
-            $result = (new ProductRepository())->create($request->getPostVars());
+            $result = $this->productRepository->create($request->getPostVars());
             if ($result) {
                 Redirect::to('/products');
             } else {
@@ -42,7 +52,7 @@ class ProductController extends Controller
 
     public function show($id)
     {
-        $product = (new ProductRepository())->find($id);
+        $product = $this->productRepository->find($id);
         if ($product === false) {
             Redirect::to('/products');
         }
@@ -51,7 +61,7 @@ class ProductController extends Controller
 
     public function edit($id)
     {
-        $product = (new ProductRepository())->find($id);
+        $product = $this->productRepository->find($id);
         $productTypes = (new ProductTypeRepository())->all();
         if ($product === false) {
             Redirect::to('/products');
@@ -80,7 +90,7 @@ class ProductController extends Controller
 
     public function destroy($id)
     {
-        $product = (new ProductRepository())->delete($id);
+        $product = $this->productRepository->delete($id);
         if ($product === false) {
             $errors = ['error' => ['Não foi possível remover o registro!' => 0]];
             Redirect::to('/products', $errors);
